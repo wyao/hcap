@@ -1,0 +1,296 @@
+/* resizing */
+#pagetitle{
+padding: 1em 0 0 5em !important;
+}
+
+/* */
+
+#header-wrap{
+background: #eee !important;
+}
+#header{
+height: 170px !important;
+background: none !important;
+}
+
+/* head icons */
+#nav-wrap1{
+top:170px !important;
+}
+.landmark{
+float:left
+}
+.img-info{
+float:left;
+color: gray;
+display:none;
+margin-left:5%;
+}
+.block-content#harvard_i{
+display:inline;
+}
+
+.block-content{
+max-width: 1200px !important;
+}
+
+.img-nav{
+padding-left:5%;
+min-width: 1050px;
+}
+.img-nav img{
+opacity:0.3;
+margin:0 10px 0 10px;
+}
+
+#tokyo{margin-top: -1px;}
+#kong, #istanbul{margin-top: -3px;}
+#dubai{margin-top: -6px;}
+#seoul{margin-top: 3px;}
+
+
+/* header icon text */
+.logo a{
+color: #460700 !important;
+}
+#pagetitle h4{
+color: #460700 !important;
+}
+.logo a :hover{
+color: #E9E2C9 !important;
+}
+
+/* body */
+body{
+background:#eee;
+}
+#main-wrap2, #main{
+background:white;
+}
+#main-wrap2{
+min-height:200px; /*adjust this */
+}
+
+#main-content{
+    width: 800px;
+margin: auto;
+}
+
+/* change footer. change nav. change logo color. have couple of color combinations. get rid of search? at least redesign*/
+
+
+/* footer */
+.sitemap{
+min-height:200px;
+color:#8b0000;
+margin: auto;
+text-align: center;
+min-width:1200px;
+}
+.map{
+float:left;
+width:200px;
+}
+.map ul{
+list-style-type: none;
+}
+.map a{
+text-decoration: none;
+}
+.map a:hover{
+color:darkRed !important;
+}
+.map li{
+margin-left:0px;
+}
+
+/* main navigation */
+
+#nav-wrap1{
+ /* background: transparent url(images/nav-left.png) no-repeat left top;
+  padding-left: 25px;*/
+  position: absolute;
+  z-index: 100;
+  top: 170px;
+  left: 6.5em;
+  height: 64px;
+  margin:auto;
+}
+
+#nav-wrap2{
+  /*background: transparent url(images/nav-bg.png) no-repeat right top; */
+  background: lightgray;
+  width:1035px;  /* overall nav width */
+  height: 32px;
+  float: left;
+}
+
+#nav-wrap2 ul#nav, #nav-wrap2 ul#nav li{
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+#nav-wrap2 ul#nav li{
+  display:inline;
+  float: left;
+  position: relative;
+/*  background: transparent url(images/nav-div.png) no-repeat left top; */
+  padding-left: 2px;
+}
+
+#nav-wrap2 ul#nav li a{
+  display: block;
+  height: 32px;
+  float: left;
+  color: black;
+  text-decoration: none;
+  font-size: 120%;
+}
+
+#nav-wrap2 ul#nav li a:hover{
+  color: #fff; /*nav text hover color */
+  background: gray;
+}
+
+#nav-wrap2 ul#nav li li a:hover{
+  background: none; /* bad hack */
+}
+
+#nav-wrap2 ul#nav .fadeThis {
+  position:relative;
+  z-index: 1;
+  background: none;
+  width:170px;
+  text-align: center;
+}
+
+/* nav color, centering */
+#nav-wrap2 ul#nav li li .fadeThis {
+  /*text-align: left;*/
+  text-align: center;
+  color: darkRed;
+}
+
+#nav-wrap2 ul#nav .fadeThis span.hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 100%;
+  width: 170px;
+/*  background: transparent url(images/nav-active.png) repeat-x left top;*/
+  z-index: -1;
+  padding: 0;
+}
+
+#nav-wrap2 ul#nav li a span{
+  display: block;
+  margin-top: 6px;
+  padding: 0 8px;
+}
+
+
+/* sub-menus */
+
+#nav-wrap2 ul#nav ul {
+  position: absolute;
+  background: #eee; /*url(images/side-menu-active.png) repeat-x left bottom;*/
+  display: none;
+  width:170px; /* adjust */
+  top: 32px; /* adjust */
+  left: 0;
+  margin: 0;
+  font-size: 100%;
+  line-height: 100%;
+  z-index: 99;
+  border: 1px solid #fff;
+}
+
+#nav-wrap2 ul#nav li ul li{
+  background: none;
+  padding: 0;
+}
+
+#nav-wrap2 ul#nav li.current_page_item ul ul,
+#nav-wrap2 ul#nav li.current_page_ancestor ul ul,
+#nav-wrap2 ul#nav li.current-cat ul ul{
+  border: 1px solid #fff !important;
+}
+
+#nav-wrap2 ul#nav li ul a{
+  width:180px;
+  float:left;
+  background: none;
+  margin: 0;
+  padding: 4px 10px;
+  height: auto;
+  color: #000;
+  font-weight: normal;
+  line-height: 125%;
+}
+
+#nav-wrap2 ul#nav li ul a span, #nav-wrap2 ul#nav li ul a span span{
+  margin: 0;
+  padding: 0;
+  height: auto;
+  float: none;
+}
+
+#nav-wrap2 ul#nav ul .fadeThis span.hover {
+  background: gray; /* base color */
+}
+
+#nav-wrap2 ul#nav li ul a:hover, #nav-wrap2 li ul#nav ul a:hover,
+#nav-wrap2 ul#nav a.active ul a:hover,
+#nav-wrap2 ul#nav li.current_page_item ul a:hover,
+#nav-wrap2 ul#nav li.current_page_ancestor ul a:hover{
+  color: #fff;
+}
+
+#nav-wrap2 ul#nav ul a:hover, #nav-wrap2 ul#nav ul a:hover span,
+#nav-wrap2 ul#nav a.active ul a:hover span,
+#nav-wrap2 ul#nav li.current_page_item ul a:hover span,
+#nav-wrap2 ul#nav li.current_page_ancestor ul a:hover span,
+#nav-wrap2 ul#nav ul li.current_page_parent a:hover span,
+#nav-wrap2 ul#nav ul li.current_page_item a:hover span,
+#nav-wrap2 ul#nav ul li.current_page_parent li.current_page_item a:hover span{
+  color:#fff;
+}
+
+#nav-wrap2 ul#nav li ul a span, #nav-wrap2 ul#nav li ul a span{
+  background: none;
+}
+
+#nav-wrap2 ul#nav ul ul{
+  top:auto;
+}
+
+#nav-wrap2 ul#nav li ul ul {
+  left:195px;
+  top: 4px;
+}
+
+#nav-wrap2 ul#nav li:hover ul ul, #nav-wrap2 ul#nav li:hover ul ul ul, #nav-wrap2 ul#nav li:hover ul ul ul ul{
+  display:none;
+}
+#nav-wrap2 ul#nav li:hover ul, #nav-wrap2 ul#nav li li:hover ul, #nav-wrap2 ul#nav li li li:hover ul, #nav-wrap2 ul#nav li li li li:hover ul{
+  display:block;
+}
+
+/* active submenus */
+#nav-wrap2 ul#nav ul li.current_page_parent a span,
+#nav-wrap2 ul#nav ul li.current_page_item a span,
+#nav-wrap2 ul#nav ul li.current_page_parent li.current_page_item a span{
+  color: #2d83d5;
+}
+
+#nav-wrap2 ul#nav ul li.current_page_item li a span, #nav-wrap2 ul#nav ul li.current_page_parent li a span{
+  color: #000;
+}
+
+
+/* Get rid of article titles */
+#main-content h2{
+display: none;
+}

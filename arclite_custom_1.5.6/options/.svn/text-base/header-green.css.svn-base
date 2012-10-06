@@ -1,0 +1,10 @@
+
+/* green header */
+
+#header{
+  background: transparent url(../images/header-noise-green-center.jpg) no-repeat center top;
+}
+
+#header-wrap{
+  background: transparent url(../images/header-noise-green.jpg) repeat center top;
+}

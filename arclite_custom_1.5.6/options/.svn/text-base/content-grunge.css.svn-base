@@ -1,0 +1,11 @@
+
+/* grunge content design */
+
+#main-wrap1{ background: transparent url(../images/main2-bg.jpg) repeat center top; }
+#main-wrap2{
+  background: transparent url(../images/main2-top.jpg) repeat-x center top;
+}
+
+#main{
+  background: transparent url(../images/main2-center.jpg) no-repeat center top;
+}

@@ -1,0 +1,11 @@
+
+/* blue sidebar titles */
+
+.box .titlewrap{
+  background: transparent url(../images/box-title-left-blue.png) no-repeat top left;
+}
+
+
+.box .titlewrap h4{
+  background: transparent url(../images/box-title-bg-blue.png) no-repeat top right;
+}

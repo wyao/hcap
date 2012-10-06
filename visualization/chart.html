@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http://zeptojs.com/zepto.js"></script>
+    <script type="text/javascript">
+
+      // Load Google Chart APIs
+      google.load('visualization', '1', {packages:['corechart']});
+      google.load('visualization', '1', {packages: ['geochart']});
+      google.load('visualization', '1', {packages:['table']});
+
+      // Set up
+      var years = ['2003-04', '2004-05', '2005-06', '2006-07', '2007-08', 
+        '2008-09', '2009-10', '2010-11', '2011-12', '2012-13'];
+
+      var schoolMap = {};
+      schoolMap['Harvard University, Cambridge'] = 'United States';
+      schoolMap['Boğaziçi University, Istanbul'] = 'Turkey';
+      schoolMap['American University in Dubai'] = 'United Arab Emirates';
+      schoolMap['St Xaviers College, Mumbai'] = 'India';
+      schoolMap['The University of Hong Kong'] = 'China'; // ?
+      schoolMap['Ewha Womans University, Seoul'] = 'South Korea';
+      schoolMap['University of Tokyo'] = 'Japan';
+      schoolMap['Chula University, Bangkok'] = 'Thailand';
+      schoolMap['Other'] = 'Other';
+
+      var yearlyAmounts = {};
+      for (var i in years) {
+        yearlyAmounts[years[i]] = 0;
+      }
+
+      var schoolAmounts = {};
+      for (var key in schoolMap) {
+        schoolAmounts[schoolMap[key]] = 0;
+      }
+
+      var surveyData = [];
+
+      // Retrieve Google Form Data
+      $.getJSON("https://spreadsheets.google.com/feeds/cells/0AianULedsJ4SdGdvYmNEYmpsN1RDRFk4dTdCbGpjSUE/1/public/basic?alt=json",
+        function(x) {
+          var entry = x.feed.entry
+          // Load relevant data
+          for (i=10; i<x.feed.openSearch$totalResults.$t; i+=5) {
+            var amount = entry[i].content.$t.replace(/[^0-9\.]+/g,"");
+            // Aggregate by year
+            yearlyAmounts[entry[i-1].content.$t] +=
+              Number(amount);
+            // Aggregate by school
+            schoolAmounts[schoolMap[entry[i-2].content.$t]] +=
+              Number(amount);
+            // Aggregate all data for table
+            surveyData.push([entry[i-3].content.$t, entry[i-2].content.$t,
+              entry[i-1].content.$t, {v:parseFloat(amount), f:'$'+amount}]);
+          }
+          // Draw
+          google.setOnLoadCallback(drawChart);
+          google.setOnLoadCallback(drawRegionsMap);
+          google.setOnLoadCallback(drawTable);
+      });
+
+      // Draw bar graph (by year)
+      function drawChart() {
+        var chartData = [['Year', 'Donation']];
+        for (var i in years){
+          chartData.push([years[i], yearlyAmounts[years[i]]]);
+        }
+
+        var data = google.visualization.arrayToDataTable(chartData);
+
+        var options = {
+          title: 'HCAP Donations by Year',
+          hAxis: {title: 'Year', titleTextStyle: {color: 'grey'}}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+
+      // Draw map (by country)
+      function drawRegionsMap() {
+        var mapData = [['School', 'Donation']];
+        for (var key in schoolMap) {
+          mapData.push([schoolMap[key], schoolAmounts[schoolMap[key]]]);
+        }
+
+        var data = google.visualization.arrayToDataTable(mapData);
+
+        var options = {};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('map_div'));
+        chart.draw(data, options);
+      };
+
+      // Draw table
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'School');
+        data.addColumn('string', 'HCAP Year');
+        data.addColumn('number', 'Donation');
+        data.addRows(surveyData);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, {showRowNumber:true, sortColumn:3, sortAscending:false});
+      }
+
+    </script>
+  </head>
+  <body>
+    <div id="table_div" style="width:600px;"></div>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    <div id="map_div" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>

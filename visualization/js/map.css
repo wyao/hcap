@@ -1,0 +1,23 @@
+svg {
+  width: 900px;
+  height: 640px;
+  pointer-events: all;
+}
+
+circle {
+  fill: #dbe4f0;
+}
+
+path {
+  fill: #aaa;
+  stroke: #fff;
+}
+
+path#Japan, #India, #SouthKorea, #Thailand, #Turkey, #UnitedArabEmirates, #UnitedStatesofAmerica {
+  fill: #903;
+}
+
+#map svg {
+  display: block;
+  margin: auto;
+}
