@@ -108,17 +108,57 @@ function load_registration_script()
 {
 	// Register script and style
 	wp_register_script( 'registration-script', plugins_url( '/inc/register.js', __FILE__ , 1, True) );
-	wp_register_script( 'registration-style', plugins_url( '/inc/register.css', __FILE__ ) );
+	wp_register_style( 'registration-style', plugins_url( '/inc/register.css', __FILE__ ) );
 	// Enqueue script and style
 	wp_enqueue_script( 'registration-script' );
-	wp_enqueue_style('registration-style' );
+	wp_enqueue_style( 'registration-style' );
 }
 add_action( 'wp_enqueue_scripts', 'load_registration_script' );
 
 // Load registration form html (only if user not registered)
 function load_registration( $content )
 {
-	$content = $content . '<p>hello world</p>';
+	$content = $content . '<div id="shadowing"></div>
+	<div id="box">
+  <span id="boxtitle"></span>
+  <form method="GET" action="lightbox-form-test.html" target="_parent">
+      
+    <p>First Name: 
+      <input type="text" name="firstname" maxlength="60" size="60">
+    </p>
+
+    <p>Last Name: 
+      <input type="text" name="lastname" maxlength="60" size="60">
+    </p>
+
+    <p>Email Address: 
+      <input type="text" name="email" value="myself@somedomainname.com" maxlength="60" size="60">
+    </p>
+
+    <p> Affiliated School: 
+      <select name="select">
+        <option selected>New York</option>
+        <option>Chicago</option>
+        <option>Miami</option>
+        <option>Los Angeles</option>
+        <option>Dallas</option>
+      </select>
+    </p>
+
+    <p>Male 
+      <input type="radio" name="genre" value="man" checked>
+      Female 
+      <input type="radio" name="genre" value="woman">
+    </p>
+
+    <p> 
+      <input type="submit" name="submit">
+      <input type="button" name="cancel" value="Cancel" onClick="closebox()">
+    </p>
+  </form>
+</div>
+<a href="#" onClick="openbox(\'Title of the Form\', 1)">click 
+  here</a>';
 	return $content;
 }
 

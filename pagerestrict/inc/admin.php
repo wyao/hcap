@@ -48,7 +48,7 @@ function pr_delete () {
 	delete_option ( 'pr_options' );
 }
 
-// Add the options page to Settings menu in admin panel
+// Add the options page
 function pr_options_page () {
 	global $pr_plugin_basename;
 	if ( current_user_can ( 'edit_others_pages' ) && function_exists ( 'add_options_page' ) ) :
@@ -65,7 +65,7 @@ function pr_filter_plugin_actions ( $links ) {
         return $links;
 }
 
-// Callback that generates the options page
+// The options page
 function pr_admin_page () {
 	pr_ver_check ();
 	if ( $_POST && $_POST['action'] == 'update' ) :
