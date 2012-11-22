@@ -121,49 +121,141 @@ function load_registration( $content )
 	$content = $content . '<div id="shadowing"></div>
 	<div id="box">
   <span id="boxtitle"></span>
-  <form method="GET" action="lightbox-form-test.html" target="_parent">
+  <form name="registration" action="" onsubmit="return temp()" method="post">
       
     <p>First Name: 
-      <input type="text" name="firstname" maxlength="60" size="60">
+      <input type="text" name="first" maxlength="60" size="60">
     </p>
 
     <p>Last Name: 
-      <input type="text" name="lastname" maxlength="60" size="60">
+      <input type="text" name="last" maxlength="60" size="60">
     </p>
 
     <p>Email Address: 
-      <input type="text" name="email" value="myself@somedomainname.com" maxlength="60" size="60">
+      <input type="text" name="email" maxlength="60" size="60">
     </p>
 
     <p> Affiliated School: 
-      <select name="select">
-        <option selected>New York</option>
-        <option>Chicago</option>
-        <option>Miami</option>
-        <option>Los Angeles</option>
-        <option>Dallas</option>
+      <select name="school">
+       	<option>Harvard University, Cambridge</option>
+		<option>Boğaziçi University, Istanbul</option>
+		<option>American University in Dubai</option>
+		<option>St Xaviers College, Mumbai</option>
+		<option>The University of Hong Kong</option>
+		<option>Ewha Womans University, Seoul</option>
+		<option>University of Tokyo</option>
+		<option>Chula University, Bangkok</option>
+		<option>Other</option>
       </select>
     </p>
 
+    <p>
+	    <select name="year">
+    		<option value="2012-13">2012-13</option>
+    		<option value="2011-12">2011-12</option>
+    		<option value="2010-11">2010-11</option>
+    		<option value="2009-10">2009-10</option>
+      		<option value="2008-09">2008-09</option>
+    		<option value="2007-08">2007-08</option>
+    		<option value="2006-07">2006-07</option>
+    		<option value="2005-06">2005-06</option>
+    		<option value="2004-05">2004-05</option>
+    		<option value="2003-04">2003-04</option>
+    		<option value="Other">Other</option>
+    	</select>
+    </p>
+
     <p>Male 
-      <input type="radio" name="genre" value="man" checked>
+      <input type="radio" name="gender" value="man" checked>
       Female 
-      <input type="radio" name="genre" value="woman">
+      <input type="radio" name="gender" value="woman">
     </p>
 
     <p> 
-      <input type="submit" name="submit">
+      <input type="submit" name="submit" value="Submit" >
       <input type="button" name="cancel" value="Cancel" onClick="closebox()">
+    </p>
+    <p id="error_msg">    	
     </p>
   </form>
 </div>
-<a href="#" onClick="openbox(\'Title of the Form\', 1)">click 
+<a href="#" onClick="openbox(\'Register\', 1)">click 
   here</a>';
 	return $content;
 }
 
+// http://codex.wordpress.org/Creating_Tables_with_Plugins
+global $jal_db_version;
+$jal_db_version = "1.0";
+
+function jal_install() {
+   global $wpdb;
+   global $jal_db_version;
+
+   $table_name = $wpdb->prefix . "alum_members";
+
+   // Add indices? Make fb_id unique?
+   $sql = "CREATE TABLE $table_name (
+  id mediumint(9) NOT NULL AUTO_INCREMENT,
+  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+  fb_id mediumint(9),
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  school VARCHAR(50) NOT NULL,
+  year YEAR(4) NOT NULL,
+  gender CHAR(1) NOT NULL,
+  UNIQUE KEY id (id)
+    );";
+
+   require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+   dbDelta($sql);
+ 
+   add_option("jal_db_version", $jal_db_version);
+}
+
+function add_alum_member() {
+	global $wpdb;
+
+	if( isset($_POST['first']) ) {
+
+		$first = $_POST['first'];
+		$last = $_POST['last'];
+		$email = $_POST['email'];
+		$school = $_POST['school'];
+		$year = $_POST['year'];
+		$gender = $_POST['gender'];
+
+		$table = $wpdb->prefix . "alum_members";
+
+		$wpdb->insert( 
+			$table,
+			array(
+				'first_name' => $first,
+				'last_name' => $last,
+				'email' => $email,
+				'school' => $school,
+				'year' => $year,
+				'gender' => $gender
+			), 
+			array( 
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%d',
+				'%s' 
+			) 
+		);
+	}
+}
+
+// Activation Hook
+register_activation_hook(__FILE__,'jal_install');
+
 // Add Actions
 add_action ( 'send_headers' , 'pr_no_cache_headers' );
+add_action ( 'wp_loaded', 'add_alum_member' );
 
 // Add Filters
 add_filter ( 'the_content' , 'pr_page_restrict' , 50 );

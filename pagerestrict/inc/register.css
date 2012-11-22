@@ -18,10 +18,10 @@
 {
   display: none;
   position: fixed;
-  top: 50%;
+  top: 30%;
   left: 50%;
   width: 400px;
-  height: 200px;
+  height: 320px;
   padding: 48px;
   margin-left: -224px;
   margin-top: -124px;
@@ -46,7 +46,7 @@
   padding-top:4px;
   left-padding:8px;
   margin:0;
-  background-color: #09c;
+  background-color: #ccc;
   color:white;
   text-align:center;
 
@@ -56,4 +56,13 @@
   border-top-left-radius: 15px;
 }
 
+#error_msg
+{
+  color:red;
+}
 
+/* Need to fix official theme */
+#header
+{
+  z-index: 0 !important
+}
