@@ -16,7 +16,7 @@ Version: 2.06
 if ( is_admin () )
 	require_once( dirname ( __FILE__ ) . '/inc/admin.php' );
 
-require_once( dirname ( __FILE__ ) . '/../../../php-sdk/facebook.php');
+require_once( dirname ( __FILE__ ) . '/php-sdk/facebook.php');
 	
 // get specific option
 function pr_get_opt ( $option ) {
