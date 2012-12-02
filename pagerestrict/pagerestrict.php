@@ -98,12 +98,12 @@ function fb_logged_in() {
 		'appId'  => '435704813143438',
 		'secret' => '5d66e4638a26eee220a8590f47637245',
 	));
-	
+
 	if($facebook &&($fbUser=$facebook->getUser())){
 		try {
 			$fbProfile=$facebook->api('/me');
 		} catch (FacebookApiException $e){
-			$fbUser=null;
+        	$fbUser=null;
 		};
 	}
 	$fbLoggedIn=!is_null($fbUser) && !($fbUser==0);
@@ -124,69 +124,98 @@ add_action( 'wp_enqueue_scripts', 'load_registration_script' );
 // Load registration form html (only if user not registered)
 function load_registration( $content )
 {
-	$content = $content . '<div id="shadowing"></div>
-	<div id="box">
-  <span id="boxtitle"></span>
-  <form name="registration" action="" onsubmit="return temp()" method="post">
-      
-    <p>First Name: 
-      <input type="text" name="first" maxlength="60" size="60">
-    </p>
+    $facebook = new Facebook(array(
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245',
+    ));
 
-    <p>Last Name: 
-      <input type="text" name="last" maxlength="60" size="60">
-    </p>
+    // If FB ID available
+    if($facebook &&($fbUser=$facebook->getUser())){
+        global $wpdb;
+        $table = $wpdb->prefix . "alum_members";
 
-    <p>Email Address: 
-      <input type="text" name="email" maxlength="60" size="60">
-    </p>
+        $row = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
 
-    <p> Affiliated School: 
-      <select name="school">
-       	<option>Harvard University, Cambridge</option>
-		<option>Boğaziçi University, Istanbul</option>
-		<option>American University in Dubai</option>
-		<option>St Xaviers College, Mumbai</option>
-		<option>The University of Hong Kong</option>
-		<option>Ewha Womans University, Seoul</option>
-		<option>University of Tokyo</option>
-		<option>Chula University, Bangkok</option>
-		<option>Other</option>
-      </select>
-    </p>
+        // DB does not contain user
+        if ($row == null){
+            $wpdb->insert(
+                $table,
+                array(
+                    'fb_id' => $fbUser
+                ),
+                array(
+                    '%d'
+                )
+            );
+        }
 
-    <p>
-	    <select name="year">
-    		<option value="2012-13">2012-13</option>
-    		<option value="2011-12">2011-12</option>
-    		<option value="2010-11">2010-11</option>
-    		<option value="2009-10">2009-10</option>
-      		<option value="2008-09">2008-09</option>
-    		<option value="2007-08">2007-08</option>
-    		<option value="2006-07">2006-07</option>
-    		<option value="2005-06">2005-06</option>
-    		<option value="2004-05">2004-05</option>
-    		<option value="2003-04">2003-04</option>
-    		<option value="Other">Other</option>
-    	</select>
-    </p>
+        // Missing registration data
+        if ($row[0]->first_name == null) {
+            $content = $content . '<div id="shadowing"></div>
+                <div id="box">
+              <span id="boxtitle"></span>
+              <form name="registration" action="" onsubmit="return temp()" method="post">
 
-    <p>Male 
-      <input type="radio" name="gender" value="man" checked>
-      Female 
-      <input type="radio" name="gender" value="woman">
-    </p>
+                <p>First Name:
+                  <input type="text" name="first" maxlength="60" size="60">
+                </p>
 
-    <p> 
-      <input type="submit" name="submit" value="Submit" >
-      <input type="button" name="cancel" value="Cancel" onClick="closebox()">
-    </p>
-    <p id="error_msg">    	
-    </p>
-  </form>
-</div>
-<a href="#" onClick="openbox(\'Register\', 1)">click 
-  here</a>';
+                <p>Last Name:
+                  <input type="text" name="last" maxlength="60" size="60">
+                </p>
+
+                <p>Email Address:
+                  <input type="text" name="email" maxlength="60" size="60">
+                </p>
+
+                <p> Affiliated School:
+                  <select name="school">
+                    <option>Harvard University, Cambridge</option>
+                    <option>Boğaziçi University, Istanbul</option>
+                    <option>American University in Dubai</option>
+                    <option>St Xaviers College, Mumbai</option>
+                    <option>The University of Hong Kong</option>
+                    <option>Ewha Womans University, Seoul</option>
+                    <option>University of Tokyo</option>
+                    <option>Chula University, Bangkok</option>
+                    <option>Other</option>
+                  </select>
+                </p>
+
+                <p>
+                    <select name="year">
+                        <option value="2012-13">2012-13</option>
+                        <option value="2011-12">2011-12</option>
+                        <option value="2010-11">2010-11</option>
+                        <option value="2009-10">2009-10</option>
+                        <option value="2008-09">2008-09</option>
+                        <option value="2007-08">2007-08</option>
+                        <option value="2006-07">2006-07</option>
+                        <option value="2005-06">2005-06</option>
+                        <option value="2004-05">2004-05</option>
+                        <option value="2003-04">2003-04</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </p>
+
+                <p>Male
+                  <input type="radio" name="gender" value="man" checked>
+                  Female
+                  <input type="radio" name="gender" value="woman">
+                </p>
+
+                <p>
+                  <input type="submit" name="submit" value="Submit" >
+                  <input type="button" name="cancel" value="Cancel" onClick="closebox()">
+                </p>
+                <p id="error_msg">
+                </p>
+              </form>
+            </div>
+            <a href="#" onClick="openbox(\'Register\', 1)">click
+              here</a>';
+        }
+    }
 	return $content;
 }
 
@@ -195,23 +224,25 @@ global $jal_db_version;
 $jal_db_version = "1.0";
 
 function jal_install() {
-   global $wpdb;
-   global $jal_db_version;
+    global $wpdb;
+    global $jal_db_version;
 
-   $table_name = $wpdb->prefix . "alum_members";
+    $table_name = $wpdb->prefix . "alum_members";
 
-   // Add indices? Make fb_id unique?
-   $sql = "CREATE TABLE $table_name (
-  id mediumint(9) NOT NULL AUTO_INCREMENT,
-  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-  fb_id mediumint(9),
-  first_name VARCHAR(50) NOT NULL,
-  last_name VARCHAR(50) NOT NULL,
-  email VARCHAR(100) NOT NULL,
-  school VARCHAR(50) NOT NULL,
-  year YEAR(4) NOT NULL,
-  gender CHAR(1) NOT NULL,
-  UNIQUE KEY id (id)
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+        fb_id INT NOT NULL,
+        first_name VARCHAR(50),
+        last_name VARCHAR(50),
+        email VARCHAR(100),
+        school VARCHAR(50),
+        year YEAR(4),
+        gender CHAR(1),
+        location VARCHAR(100),
+        job VARCHAR(200),
+        UNIQUE KEY (id),
+        UNIQUE KEY (fb_id)
     );";
 
    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -221,9 +252,14 @@ function jal_install() {
 }
 
 function add_alum_member() {
-	global $wpdb;
+    $facebook = new Facebook(array(
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245',
+    ));
 
-	if( isset($_POST['first']) ) {
+    global $wpdb;
+
+	if( isset($_POST['first']) && $facebook && ($fbUser=$facebook->getUser())) {
 
 		$first = $_POST['first'];
 		$last = $_POST['last'];
@@ -234,25 +270,26 @@ function add_alum_member() {
 
 		$table = $wpdb->prefix . "alum_members";
 
-		$wpdb->insert( 
-			$table,
-			array(
-				'first_name' => $first,
-				'last_name' => $last,
-				'email' => $email,
-				'school' => $school,
-				'year' => $year,
-				'gender' => $gender
-			), 
-			array( 
-				'%s',
-				'%s',
-				'%s',
-				'%s',
-				'%d',
-				'%s' 
-			) 
-		);
+        $wpdb->update(
+            $table,
+            array(
+                'first_name' => $first,
+                'last_name' => $last,
+                'email' => $email,
+                'school' => $school,
+                'year' => $year,
+                'gender' => $gender
+            ),
+            array( 'fb_id' =>  $fbUser),
+            array(
+                '%s',
+                '%s',
+                '%s',
+                '%s',
+                '%d',
+                '%s'
+            )
+        );
 	}
 }
 
