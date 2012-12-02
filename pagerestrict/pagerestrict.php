@@ -119,7 +119,6 @@ function load_registration_script()
 	wp_enqueue_script( 'registration-script' );
 	wp_enqueue_style( 'registration-style' );
 }
-add_action( 'wp_enqueue_scripts', 'load_registration_script' );
 
 // Load registration form html (only if user not registered)
 function load_registration( $content )
@@ -211,9 +210,7 @@ function load_registration( $content )
                 <p id="error_msg">
                 </p>
               </form>
-            </div>
-            <a href="#" onClick="openbox(\'Register\', 1)">click
-              here</a>';
+            </div>';
         }
     }
 	return $content;
@@ -293,10 +290,96 @@ function add_alum_member() {
 	}
 }
 
+function select_school( $row, $school ) {
+    if ($row[0]->school == $school)
+        return 'selected="selected"';
+    return '';
+}
+
+//[foobar]
+function registration_func( $atts ){
+    $facebook = new Facebook(array(
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245',
+    ));
+
+    // If FB ID available
+    if($facebook &&($fbUser=$facebook->getUser())){
+        global $wpdb;
+        $table = $wpdb->prefix . "alum_members";
+
+        $row = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
+
+        return '<form name="registration" action="" onsubmit="return temp()" method="post">
+
+                <p>First Name:
+                  <input type="text" name="first" value=' . $row[0]->first_name . ' maxlength="60" size="60">
+                </p>
+
+                <p>Last Name:
+                  <input type="text" name="last" value=' . $row[0]->last_name . ' maxlength="60" size="60">
+                </p>
+
+                <p>Email Address:
+                  <input type="text" name="email" value=' . $row[0]->email . ' maxlength="60" size="60">
+                </p>
+
+                <p> Affiliated School:
+                  <select name="school">
+                    <option ' . select_school($row, 'Harvard University, Cambridge') . '>Harvard University, Cambridge</option>
+                    <option ' . select_school($row, 'Boğaziçi University, Istanbul') . '>Boğaziçi University, Istanbul</option>
+                    <option ' . select_school($row, 'American University in Dubai') . '>American University in Dubai</option>
+                    <option ' . select_school($row, 'St Xaviers College, Mumbai') . '>St Xaviers College, Mumbai</option>
+                    <option ' . select_school($row, 'The University of Hong Kong') . '>The University of Hong Kong</option>
+                    <option ' . select_school($row, 'Ewha Womans University, Seoul') . '>Ewha Womans University, Seoul</option>
+                    <option ' . select_school($row, 'University of Tokyo') . '>University of Tokyo</option>
+                    <option ' . select_school($row, 'Chula University, Bangkok') . '>Chula University, Bangkok</option>
+                    <option ' . select_school($row, 'Other') . '>Other</option>
+                  </select>
+                </p>
+
+                <p>
+                    <select name="year">
+                        <option value="2012-13">2012-13</option>
+                        <option value="2011-12">2011-12</option>
+                        <option value="2010-11">2010-11</option>
+                        <option value="2009-10">2009-10</option>
+                        <option value="2008-09">2008-09</option>
+                        <option value="2007-08">2007-08</option>
+                        <option value="2006-07">2006-07</option>
+                        <option value="2005-06">2005-06</option>
+                        <option value="2004-05">2004-05</option>
+                        <option value="2003-04">2003-04</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </p>
+
+                <p>Male
+                  <input type="radio" name="gender" value="man" checked>
+                  Female
+                  <input type="radio" name="gender" value="woman">
+                </p>
+
+                <p>
+                  <input type="submit" name="submit" value="Submit" >
+                  <input type="button" name="cancel" value="Cancel" onClick="closebox()">
+                </p>
+                <p id="error_msg">
+                </p>
+              </form>';
+    }
+
+    return "foobar";
+}
+
+// Add Shortcode
+add_shortcode( 'registration', 'registration_func' );
+
 // Activation Hook
 register_activation_hook(__FILE__,'jal_install');
 
 // Add Actions
+add_action( 'wp_enqueue_scripts', 'load_registration_script' );
 add_action ( 'send_headers' , 'pr_no_cache_headers' );
 add_action ( 'wp_loaded', 'add_alum_member' );
 
