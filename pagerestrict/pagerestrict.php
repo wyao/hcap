@@ -47,7 +47,7 @@ function pr_get_page_content() {
 	if ( pr_get_opt ( 'loginform' ) == true ) :
 		if ( ! isset ( $user_login ) )
 			$user_login = '';
-		$pr_page_content .= '<div class="fb-login-button" data-show-faces="true" data-width="200" data-max-rows="1"></div>';
+		$pr_page_content .= '<div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1" scope="user_location"></div>';
 		$post->comment_status = 'closed';
 	endif;
 	return $pr_page_content;
@@ -290,6 +290,10 @@ function add_alum_member() {
 	}
 }
 
+function load_fb_js() {
+	wp_enqueue_script( 'fb-js', plugins_url( 'fb.js', __FILE__ ));
+}
+
 function select_school( $row, $school ) {
     if ($row[0]->school == $school)
         return 'selected="selected"';
@@ -382,6 +386,7 @@ register_activation_hook(__FILE__,'jal_install');
 add_action( 'wp_enqueue_scripts', 'load_registration_script' );
 add_action ( 'send_headers' , 'pr_no_cache_headers' );
 add_action ( 'wp_loaded', 'add_alum_member' );
+add_action ('wp_enqueue_scripts', 'load_fb_js');
 
 // Add Filters
 add_filter ( 'the_content' , 'pr_page_restrict' , 50 );
