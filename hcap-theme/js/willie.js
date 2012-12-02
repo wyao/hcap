@@ -1,10 +1,10 @@
 var $j = jQuery.noConflict()
 
 jQuery(document).ready(function(){
-    $j("#dubai").mouseover(function(){
+    $j("#bangkok").mouseover(function(){
 	$j('.landmark img').css('opacity','0.3')
 	$j('.img-info').css('display','none')
-	$j("#dubai_i").css("display","inline")
+	$j("#bangkok_i").css("display","inline")
 	$j(this).css('opacity','1.0')
     });
     $j("#mumbai").mouseover(function(){
