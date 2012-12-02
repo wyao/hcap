@@ -1,7 +1,6 @@
 <?php
 /*
-Part of WordPress Plugin: Page Restrict
-Plugin URI: http://sivel.net/wordpress/
+Part of WordPress Plugin: Facebook Restrict
 */
 
 //

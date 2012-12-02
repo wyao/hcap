@@ -86,8 +86,7 @@ function closebox()
 
 
 // Validate the registration form
-
-function temp() {
+function validate() {
   var first = document.forms["registration"]["first"].value;
   var last = document.forms["registration"]["last"].value;
   var email = document.forms["registration"]["email"].value;

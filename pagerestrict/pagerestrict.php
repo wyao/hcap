@@ -1,18 +1,12 @@
 <?php
 /*
-Plugin Name: Page Restrict
-Plugin URI: http://theandystratton.com/pagerestrict
-Description: Restrict certain pages to logged in users
-Author: Matt Martz & Andy Stratton
-Author URI: http://theandystratton.com
-Version: 2.06
-
-	Copyright (c) 2008 Matt Martz (http://sivel.net)
-        Page Restrict is released under the GNU Lesser General Public License (LGPL)
-	http://www.gnu.org/licenses/lgpl-3.0.txt
+Plugin Name: Facebook Restrict
+Description: Restrict certain pages to logged in Facebook users
+Author: Matt Martz & Andy Stratton & Willie Yao & Andrew Zhou
+Version: 1.0
 */
 
-// ff we are in the admin load the admin functionality
+// if we are in the admin load the admin functionality
 if ( is_admin () )
 	require_once( dirname ( __FILE__ ) . '/inc/admin.php' );
 
@@ -133,10 +127,10 @@ function load_registration( $content )
         global $wpdb;
         $table = $wpdb->prefix . "alum_members";
 
-        $row = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
+        $rows = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
 
         // DB does not contain user
-        if ($row == null){
+        if ($rows == null){
             $wpdb->insert(
                 $table,
                 array(
@@ -149,11 +143,11 @@ function load_registration( $content )
         }
 
         // Missing registration data
-        if ($row[0]->first_name == null) {
+        if ($rows[0]->first_name == null) {
             $content = $content . '<div id="shadowing"></div>
                 <div id="box">
               <span id="boxtitle"></span>
-              <form name="registration" action="" onsubmit="return temp()" method="post">
+              <form name="registration" action="" onsubmit="return validate()" method="post">
 
                 <p>First Name:
                   <input type="text" name="first" maxlength="60" size="60">
@@ -170,7 +164,7 @@ function load_registration( $content )
                 <p> Affiliated School:
                   <select name="school">
                     <option>Harvard University, Cambridge</option>
-                    <option>Boğaziçi University, Istanbul</option>
+                    <option value="Bogazici University, Istanbul">Boğaziçi University, Istanbul</option>
                     <option>American University in Dubai</option>
                     <option>St Xaviers College, Mumbai</option>
                     <option>The University of Hong Kong</option>
@@ -234,8 +228,8 @@ function jal_install() {
         last_name VARCHAR(50),
         email VARCHAR(100),
         school VARCHAR(50),
-        year YEAR(4),
-        gender CHAR(1),
+        year VARCHAR(20),
+        gender VARCHAR(10),
         location VARCHAR(100),
         job VARCHAR(200),
         UNIQUE KEY (id),
@@ -283,7 +277,7 @@ function add_alum_member() {
                 '%s',
                 '%s',
                 '%s',
-                '%d',
+                '%s',
                 '%s'
             )
         );
@@ -294,9 +288,15 @@ function load_fb_js() {
 	wp_enqueue_script( 'fb-js', plugins_url( 'fb.js', __FILE__ ));
 }
 
-function select_school( $row, $school ) {
-    if ($row[0]->school == $school)
+function check_selection( $content, $target ) {
+    if ($content == $target)
         return 'selected="selected"';
+    return '';
+}
+
+function check_checked( $content, $target) {
+    if ($content == $target)
+        return 'checked';
     return '';
 }
 
@@ -307,61 +307,63 @@ function registration_func( $atts ){
         'secret' => '5d66e4638a26eee220a8590f47637245',
     ));
 
+    // TODO: fix null name/email bug
     // If FB ID available
     if($facebook &&($fbUser=$facebook->getUser())){
         global $wpdb;
         $table = $wpdb->prefix . "alum_members";
 
-        $row = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
+        $rows = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
 
-        return '<form name="registration" action="" onsubmit="return temp()" method="post">
+        return '<form name="registration" action="" onsubmit="return validate()" method="post">
 
                 <p>First Name:
-                  <input type="text" name="first" value=' . $row[0]->first_name . ' maxlength="60" size="60">
+                  <input type="text" name="first" value=' . $rows[0]->first_name . ' maxlength="60" size="60">
                 </p>
 
                 <p>Last Name:
-                  <input type="text" name="last" value=' . $row[0]->last_name . ' maxlength="60" size="60">
+                  <input type="text" name="last" value=' . $rows[0]->last_name . ' maxlength="60" size="60">
                 </p>
 
                 <p>Email Address:
-                  <input type="text" name="email" value=' . $row[0]->email . ' maxlength="60" size="60">
+                  <input type="text" name="email" value=' . $rows[0]->email . ' maxlength="60" size="60">
                 </p>
 
                 <p> Affiliated School:
                   <select name="school">
-                    <option ' . select_school($row, 'Harvard University, Cambridge') . '>Harvard University, Cambridge</option>
-                    <option ' . select_school($row, 'Boğaziçi University, Istanbul') . '>Boğaziçi University, Istanbul</option>
-                    <option ' . select_school($row, 'American University in Dubai') . '>American University in Dubai</option>
-                    <option ' . select_school($row, 'St Xaviers College, Mumbai') . '>St Xaviers College, Mumbai</option>
-                    <option ' . select_school($row, 'The University of Hong Kong') . '>The University of Hong Kong</option>
-                    <option ' . select_school($row, 'Ewha Womans University, Seoul') . '>Ewha Womans University, Seoul</option>
-                    <option ' . select_school($row, 'University of Tokyo') . '>University of Tokyo</option>
-                    <option ' . select_school($row, 'Chula University, Bangkok') . '>Chula University, Bangkok</option>
-                    <option ' . select_school($row, 'Other') . '>Other</option>
+                    <option ' . check_selection($rows[0]->school, 'Harvard University, Cambridge') . '>Harvard University, Cambridge</option>
+                    <option value="Bogazici University, Istanbul" ' . check_selection($rows[0]->school, 'Bogazici University, Istanbul') . '>Boğaziçi University, Istanbul</option>
+                    <option ' . check_selection($rows[0]->school, 'American University in Dubai') . '>American University in Dubai</option>
+                    <option ' . check_selection($rows[0]->school, 'St Xaviers College, Mumbai') . '>St Xaviers College, Mumbai</option>
+                    <option ' . check_selection($rows[0]->school, 'The University of Hong Kong') . '>The University of Hong Kong</option>
+                    <option ' . check_selection($rows[0]->school, 'Ewha Womans University, Seoul') . '>Ewha Womans University, Seoul</option>
+                    <option ' . check_selection($rows[0]->school, 'University of Tokyo') . '>University of Tokyo</option>
+                    <option ' . check_selection($rows[0]->school, 'Chula University, Bangkok') . '>Chula University, Bangkok</option>
+                    <option ' . check_selection($rows[0]->school, 'Other') . '>Other</option>
                   </select>
                 </p>
 
                 <p>
                     <select name="year">
-                        <option value="2012-13">2012-13</option>
-                        <option value="2011-12">2011-12</option>
-                        <option value="2010-11">2010-11</option>
-                        <option value="2009-10">2009-10</option>
-                        <option value="2008-09">2008-09</option>
-                        <option value="2007-08">2007-08</option>
-                        <option value="2006-07">2006-07</option>
-                        <option value="2005-06">2005-06</option>
-                        <option value="2004-05">2004-05</option>
-                        <option value="2003-04">2003-04</option>
-                        <option value="Other">Other</option>
+                        <option value="2012-13" ' . check_selection($rows[0]->year, "2012-13") . '>2012-13</option>
+                        <option value="2011-12" ' . check_selection($rows[0]->year, "2011-12") . '>2011-12</option>
+                        <option value="2010-11" ' . check_selection($rows[0]->year, "2010-11") . '>2010-11</option>
+                        <option value="2009-10" ' . check_selection($rows[0]->year, "2009-10") . '>2009-10</option>
+                        <option value="2008-09" ' . check_selection($rows[0]->year, "2008-09") . '>2008-09</option>
+                        <option value="2007-08" ' . check_selection($rows[0]->year, "2007-08") . '>2007-08</option>
+                        <option value="2006-07" ' . check_selection($rows[0]->year, "2006-07") . '>2006-07</option>
+                        <option value="2005-06" ' . check_selection($rows[0]->year, "2005-06") . '>2005-06</option>
+                        <option value="2004-05" ' . check_selection($rows[0]->year, "2004-05") . '>2004-05</option>
+                        <option value="2003-04" ' . check_selection($rows[0]->year, "2003-04") . '>2003-04</option>
+                        <option value="Other" ' . check_selection($rows[0]->year, "Other") . '>Other</option>
                     </select>
                 </p>
 
-                <p>Male
-                  <input type="radio" name="gender" value="man" checked>
-                  Female
-                  <input type="radio" name="gender" value="woman">
+                <p>
+                    Male
+                    <input type="radio" name="gender" value="man" ' . check_checked($rows[0]->gender, 'man') . '>
+                    Female
+                    <input type="radio" name="gender" value="woman" ' . check_checked($rows[0]->gender, 'woman') . '>
                 </p>
 
                 <p>
@@ -373,7 +375,7 @@ function registration_func( $atts ){
               </form>';
     }
 
-    return "foobar";
+    return "";
 }
 
 // Add Shortcode
