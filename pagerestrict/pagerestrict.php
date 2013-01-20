@@ -3,7 +3,7 @@
 Plugin Name: Facebook Restrict
 Description: Restrict certain pages to logged in Facebook users
 Author: Matt Martz & Andy Stratton & Willie Yao & Andrew Zhou
-Version: 1.0
+Version: 3.0
 */
 
 // if we are in the admin load the admin functionality
@@ -89,8 +89,8 @@ function pr_comment_restrict ( $pr_comment_array ) {
 function fb_logged_in() {
 	
 	$facebook = new Facebook(array(
-		'appId'  => '435704813143438',
-		'secret' => '5d66e4638a26eee220a8590f47637245',
+		'appId'  => '186372541507735', //'435704813143438',
+		'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389', //'5d66e4638a26eee220a8590f47637245',
 	));
 
 	if($facebook &&($fbUser=$facebook->getUser())){
