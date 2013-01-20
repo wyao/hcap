@@ -1,12 +1,13 @@
 <?php
 /*
-Plugin Name: Facebook Restrict
+Plugin Name: HCAP FB Login
 Description: Restrict certain pages to logged in Facebook users
 Author: Matt Martz & Andy Stratton & Willie Yao & Andrew Zhou
 Version: 3.0
 */
 
 // if we are in the admin load the admin functionality
+
 if ( is_admin () )
 	require_once( dirname ( __FILE__ ) . '/inc/admin.php' );
 
@@ -89,8 +90,8 @@ function pr_comment_restrict ( $pr_comment_array ) {
 function fb_logged_in() {
 	
 	$facebook = new Facebook(array(
-		'appId'  => '186372541507735', //'435704813143438',
-		'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389', //'5d66e4638a26eee220a8590f47637245',
+		'appId'  => '435704813143438',
+		'secret' => '5d66e4638a26eee220a8590f47637245',
 	));
 
 	if($facebook &&($fbUser=$facebook->getUser())){
@@ -222,7 +223,7 @@ function jal_install() {
 
     $sql = "CREATE TABLE $table_name (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
-        time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+        time datetime,
         fb_id INT NOT NULL,
         first_name VARCHAR(50),
         last_name VARCHAR(50),

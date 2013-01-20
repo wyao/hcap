@@ -1,2 +1,14 @@
 Official mysql pw: EoeUPo
 HCAP-Test mysql pw: EfSBjvxVUyuo
+
+Official:
+App ID/API Key
+435704813143438
+App Secret
+5d66e4638a26eee220a8590f47637245
+
+Test:
+App ID/API Key
+186372541507735
+App Secret
+a6bcf7a2e60148f0e1d924ecb804d389

@@ -1,8 +1,8 @@
 window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
-      appId      : '186372541507735', //435704813143438', // App ID from the App Dashboard
-      channelUrl : '//http://www.hcs.harvard.edu/~hcap-test/wp-content/plugins/pagerestrict/channel.html', // Channel File for x-domain communication
+      appId      : '435704813143438', // App ID from the App Dashboard
+      channelUrl : '//www.harvardcollegeinasia.org/wp-content/plugins/pagerestrict/channel.html', // Channel File for x-domain communication
       status     : true, // check the login status upon init?
       cookie     : true, // set sessions cookies to allow your server to access the session?
       xfbml      : true  // parse XFBML tags on this page?

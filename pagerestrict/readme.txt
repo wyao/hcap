@@ -1,4 +1,4 @@
-=== Facebook Restrict ===
+=== HCAP FB Login ===
 Contributors: theandystratton, sivel, wyao, andrewz
 Tags: pages, page, restrict, restriction, logged in, cms
 

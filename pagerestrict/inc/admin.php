@@ -51,7 +51,7 @@ function pr_delete () {
 function pr_options_page () {
 	global $pr_plugin_basename;
 	if ( current_user_can ( 'edit_others_pages' ) && function_exists ( 'add_options_page' ) ) :
-		add_options_page ( 'Page Restrict' , 'Page Restrict' , 'publish_pages' , 'pagerestrict' , 'pr_admin_page' );
+		add_options_page ( 'HCAP FB Login' , 'HCAP FB Login' , 'publish_pages' , 'pagerestrict' , 'pr_admin_page' );
 		add_filter("plugin_action_links_$pr_plugin_basename", 'pr_filter_plugin_actions' );
 	endif;
 
