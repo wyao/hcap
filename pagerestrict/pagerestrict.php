@@ -158,7 +158,7 @@ function load_registration( $content )
                   <input type="text" name="last" maxlength="60" size="60">
                 </p>
 
-                <p>Email Address:
+                <p>Email Address (Please do NOT use @college):
                   <input type="text" name="email" maxlength="60" size="60">
                 </p>
 
@@ -177,7 +177,7 @@ function load_registration( $content )
                 </p>
 
                 <p>
-                    <select name="year">
+                    <select name="hcap_year">
                         <option value="2012-13">2012-13</option>
                         <option value="2011-12">2011-12</option>
                         <option value="2010-11">2010-11</option>
@@ -224,7 +224,7 @@ function jal_install() {
     $sql = "CREATE TABLE $table_name (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
         time datetime,
-        fb_id INT NOT NULL,
+        fb_id BIGINT NOT NULL,
         first_name VARCHAR(50),
         last_name VARCHAR(50),
         email VARCHAR(100),
@@ -257,7 +257,7 @@ function add_alum_member() {
 		$last = $_POST['last'];
 		$email = $_POST['email'];
 		$school = $_POST['school'];
-		$year = $_POST['year'];
+		$year = $_POST['hcap_year'];
 		$gender = $_POST['gender'];
 
 		$table = $wpdb->prefix . "alum_members";
