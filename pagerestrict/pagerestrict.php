@@ -3,7 +3,7 @@
 Plugin Name: HCAP FB Login
 Description: Restrict certain pages to logged in Facebook users
 Author: Matt Martz & Andy Stratton & Willie Yao & Andrew Zhou
-Version: 3.0
+Version: 3.0.1
 */
 
 // if we are in the admin load the admin functionality
@@ -12,6 +12,8 @@ if ( is_admin () )
 	require_once( dirname ( __FILE__ ) . '/inc/admin.php' );
 
 require_once( dirname ( __FILE__ ) . '/php-sdk/facebook.php');
+
+$fbProfile = null;
 	
 // get specific option
 function pr_get_opt ( $option ) {
@@ -61,7 +63,7 @@ function pr_page_restrict ( $pr_page_content ) {
 	
 	if (!fb_logged_in() && $pr_check) :
 		// current post is in either page / post restriction array
-		$is_restricted = ( in_array($post->ID, pr_get_opt('pages')) || in_array($post->ID, pr_get_opt('posts')) ) && pr_get_opt ( 'method' ) != 'none';
+	  $is_restricted = ( in_array($post->ID, pr_get_opt('pages')) || in_array($post->ID, pr_get_opt('posts')) ) && pr_get_opt ( 'method' ) != 'none';
 		// content is restricted OR everything is restricted
 		if ( (is_single() || is_page()) && ($is_restricted || pr_get_opt('method') == 'all') ):
 			$pr_page_content = pr_get_page_content();
@@ -88,19 +90,22 @@ function pr_comment_restrict ( $pr_comment_array ) {
 }
 
 function fb_logged_in() {
-	
+        global $fbProfile;
 	$facebook = new Facebook(array(
-		'appId'  => '435704813143438',
-		'secret' => '5d66e4638a26eee220a8590f47637245',
+		'appId'  => '186372541507735',
+		'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
 	));
 
 	if($facebook &&($fbUser=$facebook->getUser())){
 		try {
+		  if (!$fbProfile) {
 			$fbProfile=$facebook->api('/me');
+		  }
 		} catch (FacebookApiException $e){
         	$fbUser=null;
 		};
 	}
+
 	$fbLoggedIn=!is_null($fbUser) && !($fbUser==0);
 	return $fbLoggedIn;
 }
@@ -119,13 +124,14 @@ function load_registration_script()
 function load_registration( $content )
 {
     $facebook = new Facebook(array(
-        'appId'  => '435704813143438',
-        'secret' => '5d66e4638a26eee220a8590f47637245',
+        'appId'  => '186372541507735',
+        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389'
     ));
-
+   
     // If FB ID available
     if($facebook &&($fbUser=$facebook->getUser())){
-        global $wpdb;
+
+      global $wpdb, $fbProfile;
         $table = $wpdb->prefix . "alum_members";
 
         $rows = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
@@ -142,6 +148,30 @@ function load_registration( $content )
                 )
             );
         }
+
+        // Update current location
+        try {
+            // Grab location
+
+	  if (!$fbProfile) {
+	    $fbProfile = $facebook->api('/me');
+	  }
+	  $fb_location = $fbProfile['location']['id'];
+	  print_r($fbProfile);
+            // Update DB with location
+            $wpdb->update(
+                $table,
+                array(
+                    'location' => $fb_location
+                ),
+                array( 'fb_id' =>  $fbUser),
+                array(
+                    '%d'
+                )
+            );
+        } catch (FacebookApiException $e){
+	};
+
 
         // Missing registration data
         if ($rows[0]->first_name == null) {
@@ -231,7 +261,7 @@ function jal_install() {
         school VARCHAR(50),
         year VARCHAR(20),
         gender VARCHAR(10),
-        location VARCHAR(100),
+        location BIGINT,
         job VARCHAR(200),
         UNIQUE KEY (id),
         UNIQUE KEY (fb_id)
@@ -245,8 +275,8 @@ function jal_install() {
 
 function add_alum_member() {
     $facebook = new Facebook(array(
-        'appId'  => '435704813143438',
-        'secret' => '5d66e4638a26eee220a8590f47637245',
+        'appId'  => '186372541507735',
+        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
     ));
 
     global $wpdb;
@@ -304,8 +334,8 @@ function check_checked( $content, $target) {
 //[foobar]
 function registration_func( $atts ){
     $facebook = new Facebook(array(
-        'appId'  => '435704813143438',
-        'secret' => '5d66e4638a26eee220a8590f47637245',
+        'appId'  => '186372541507735',
+        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
     ));
 
     // TODO: fix null name/email bug
