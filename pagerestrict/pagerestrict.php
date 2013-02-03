@@ -92,8 +92,8 @@ function pr_comment_restrict ( $pr_comment_array ) {
 function fb_logged_in() {
         global $fbProfile;
 	$facebook = new Facebook(array(
-		'appId'  => '186372541507735',
-		'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
+		'appId'  => '435704813143438',
+		'secret' => '5d66e4638a26eee220a8590f47637245',
 	));
 
 	if($facebook &&($fbUser=$facebook->getUser())){
@@ -124,8 +124,8 @@ function load_registration_script()
 function load_registration( $content )
 {
     $facebook = new Facebook(array(
-        'appId'  => '186372541507735',
-        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389'
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245'
     ));
    
     // If FB ID available
@@ -157,7 +157,7 @@ function load_registration( $content )
 	    $fbProfile = $facebook->api('/me');
 	  }
 	  $fb_location = $fbProfile['location']['id'];
-	  print_r($fbProfile);
+	  
             // Update DB with location
             $wpdb->update(
                 $table,
@@ -275,8 +275,8 @@ function jal_install() {
 
 function add_alum_member() {
     $facebook = new Facebook(array(
-        'appId'  => '186372541507735',
-        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245',
     ));
 
     global $wpdb;
@@ -334,8 +334,8 @@ function check_checked( $content, $target) {
 //[foobar]
 function registration_func( $atts ){
     $facebook = new Facebook(array(
-        'appId'  => '186372541507735',
-        'secret' => 'a6bcf7a2e60148f0e1d924ecb804d389',
+        'appId'  => '435704813143438',
+        'secret' => '5d66e4638a26eee220a8590f47637245',
     ));
 
     // TODO: fix null name/email bug
