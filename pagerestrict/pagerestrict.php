@@ -63,7 +63,7 @@ function pr_page_restrict ( $pr_page_content ) {
 	
 	if (!fb_logged_in() && $pr_check) :
 		// current post is in either page / post restriction array
-	  $is_restricted = ( in_array($post->ID, pr_get_opt('pages')) || in_array($post->ID, pr_get_opt('posts')) ) && pr_get_opt ( 'method' ) != 'none';
+		$is_restricted = ( in_array($post->ID, pr_get_opt('pages')) || in_array($post->ID, pr_get_opt('posts')) ) && pr_get_opt ( 'method' ) != 'none';
 		// content is restricted OR everything is restricted
 		if ( (is_single() || is_page()) && ($is_restricted || pr_get_opt('method') == 'all') ):
 			$pr_page_content = pr_get_page_content();
@@ -105,7 +105,6 @@ function fb_logged_in() {
         	$fbUser=null;
 		};
 	}
-
 	$fbLoggedIn=!is_null($fbUser) && !($fbUser==0);
 	return $fbLoggedIn;
 }
@@ -125,13 +124,12 @@ function load_registration( $content )
 {
     $facebook = new Facebook(array(
         'appId'  => '435704813143438',
-        'secret' => '5d66e4638a26eee220a8590f47637245'
+        'secret' => '5d66e4638a26eee220a8590f47637245',
     ));
-   
+
     // If FB ID available
     if($facebook &&($fbUser=$facebook->getUser())){
-
-      global $wpdb, $fbProfile;
+        global $wpdb, $fbProfile;
         $table = $wpdb->prefix . "alum_members";
 
         $rows = $wpdb->get_results( "SELECT * FROM $table WHERE fb_id = $fbUser" );
@@ -157,7 +155,7 @@ function load_registration( $content )
 	    $fbProfile = $facebook->api('/me');
 	  }
 	  $fb_location = $fbProfile['location']['id'];
-	  
+
             // Update DB with location
             $wpdb->update(
                 $table,
