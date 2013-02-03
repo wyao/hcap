@@ -150,21 +150,22 @@ function load_registration( $content )
         // Update current location
         try {
             // Grab location
-
-	  if (!$fbProfile) {
-	    $fbProfile = $facebook->api('/me');
-	  }
-	  $fb_location = $fbProfile['location']['id'];
+            if (!$fbProfile) {
+                $fbProfile = $facebook->api('/me');
+            }
+            $fb_location = $fbProfile['location']['id'];
 
             // Update DB with location
             $wpdb->update(
                 $table,
                 array(
-                    'location' => $fb_location
+                    'location' => $fb_location,
+                    'time' => current_time('mysql')
                 ),
                 array( 'fb_id' =>  $fbUser),
                 array(
-                    '%d'
+                    '%d',
+                    '%s'
                 )
             );
         } catch (FacebookApiException $e){
